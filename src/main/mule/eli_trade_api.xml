@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    
+    <flow name="eli_trade_api-main">
+        <http:listener config-ref="eli_trade_api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="eli_trade_api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="4eddaf1b-45cc-4189-8b9c-0e6ae157d5e3">
+                    <ee:message />
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+                <flow-ref doc:name="set-error-response-sub_Flow" doc:id="2ad8430d-f517-4e3a-8726-7f88a2d5af8f" name="set-error-response-sub_Flow" />
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="25ea0a35-3305-4092-bc76-5420aea3eedf">
+                    <ee:message />
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[404]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+                <flow-ref doc:name="set-error-response-sub_Flow" doc:id="38000bbc-9954-40a6-9356-34c470591b56" name="set-error-response-sub_Flow" />
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="2f827c59-27d3-44d4-a802-b79f7188313e">
+                    <ee:message />
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[405]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+                <flow-ref doc:name="set-error-response-sub_Flow" doc:id="20d8f8c4-2c7c-4a3a-a444-f0f24f8858d3" name="set-error-response-sub_Flow" />
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="f3339c1f-942f-4ed9-9535-a99809fd3c74">
+                    <ee:message />
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[406]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+                <flow-ref doc:name="set-error-response-sub_Flow" doc:id="63f3c0e7-f3d1-44b8-a9dd-03c53201d97e" name="set-error-response-sub_Flow" />
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="164d967a-0da2-4dc9-933d-07ef03f85a83">
+                    <ee:message />
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[415]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+                <flow-ref doc:name="set-error-response-sub_Flow" doc:id="2682ea5f-7c8c-49d5-9bf4-369e75e81d83" name="set-error-response-sub_Flow" />
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="30f30287-0e88-4ee7-9bc4-560a15e2fc85">
+                    <ee:message />
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[501]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+                <flow-ref doc:name="set-error-response-sub_Flow" doc:id="d92d0cd8-4955-40fa-9995-0b76bccdb01f" name="set-error-response-sub_Flow" />
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="eli_trade_api-console">
+        <http:listener config-ref="eli_trade_api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="eli_trade_api-config" />
+    </flow>
+    <flow name="post:\trade\file:application\json:eli_trade_api-config">
+        <flow-ref doc:name="process-trade-to-file-sSub_Flow" doc:id="e219e8e1-e367-44b2-89f8-ad06806ba9ba" name="process-trade-to-file-Sub_Flow" />
+    </flow>
+	<flow name="post:\trade\ods:application\json:eli_trade_api-config">
+		<flow-ref doc:name="process-trades-to-ODS-Sub_Flow" doc:id="4f297677-9ef9-4084-9fa3-66c3a241f8d5" name="process-trades-to-ODS-Sub_Flow"/>
+    </flow>
+</mule>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="a26e128a-8a4a-43d0-be39-653d3dd409a2" file="config/${env}.yaml" />
+	<configuration doc:name="Configuration" doc:id="3a8b8699-99fd-41c3-98a5-d8d60d0e1186" defaultErrorHandler-ref="globalError_Handler" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="7d9401d4-0831-4e7d-94d6-7bc262b4ee81" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="root" database="sys"/>
+	</db:config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="2e6e7462-763b-48cb-bd58-440354f4ecbf" />
+	<http:listener-config name="eli_trade_api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="eli_trade_api-config" api="resource::6326f4e2-892d-4b17-9664-89a7346f1321:eli_trade_api:1.0.4:raml:zip:eli_trade_api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	
+	
+	
+	
+	<error-handler name="globalError_Handler" doc:id="66eb142a-1343-4da7-a9a9-a7ad49d7be0e" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="55e8c791-b1cc-4d95-bb9f-8091a6a759a3" >
+			<flow-ref doc:name="Flow Reference" doc:id="7c17f2e7-3dd2-4348-abfd-6f4849dc5e6d" name="set-error-response-sub_Flow"/>
+		</on-error-propagate>
+	</error-handler>
+	<sub-flow name="set-error-response-sub_Flow" doc:id="4f5f4604-86a1-4d59-91f3-5f1aedd93c1b" >
+		<ee:transform doc:name="Transform Message" doc:id="5f6ec2b1-0bba-49ed-8811-053630df1522" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"status": "failed",
+"errorType": error.errorType ,
+"errorDescription": error.description
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+</mule>

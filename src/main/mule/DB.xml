@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	
+	<flow name="DBFlow" doc:id="a27ef0ed-92a4-4fd4-ac63-8d5b28127d84" >
+		<db:insert doc:name="Insert" doc:id="1919b1a7-25ed-47f0-919d-407800802547" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO `sys`.`fx` (`index`, `symbol`, `quantity`, `price`, `operation`) VALUES ('NASDAQ', 'USDINR', '20', '8', 'BUY');]]></db:sql>
+		</db:insert>
+		<logger level="INFO" doc:name="Logger" doc:id="f9660c21-7690-46f6-8c5b-428fcc8c1a29" />
+	</flow>
+</mule>

@@ -24,6 +24,7 @@ quantity,
 :price, 
 :operation)"]]></ee:set-variable>
 						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
+						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
 					</ee:variables>
 				</ee:transform>
 				<flow-ref doc:name="insert-to-db-Sub_Flow" doc:id="9f9d9fde-8911-446f-a44c-0050d52299ec" name="insert-to-db-Sub_Flow"/>

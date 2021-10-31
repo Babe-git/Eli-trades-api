@@ -23,16 +23,7 @@ output application/json
 quantity, 
 :price, 
 :operation)"]]></ee:set-variable>
-						<ee:set-variable variableName="sqlInputParams"><![CDATA[%dw 2.0
-output application/json
----
-{
-index: payload.index, 
-symbol: payload.symbol, 
-quantity: payload.quantity, 
-price: payload.price, 
-operation: payload.operation
-}]]></ee:set-variable>
+						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
 					</ee:variables>
 				</ee:transform>
 				<flow-ref doc:name="insert-to-db-Sub_Flow" doc:id="9f9d9fde-8911-446f-a44c-0050d52299ec" name="insert-to-db-Sub_Flow"/>
@@ -53,25 +44,9 @@ output application/json
 				<ee:transform doc:name="set vars" doc:id="ca8117d7-54d6-4075-ae12-cedfac735069">
 					<ee:message />
 					<ee:variables>
-						<ee:set-variable variableName="sqlInputParams"><![CDATA[%dw 2.0
-output application/json
----
-{
-index: payload.index, 
-symbol: payload.symbol, 
-quantity: payload.quantity, 
-price: payload.price, 
-operation: payload.operation
-}]]></ee:set-variable>
-						<ee:set-variable variableName="sqlQuery"><![CDATA[%dw 2.0
-output application/json
----
-"INSERT INTO `sys`.`fx` (`index`, `symbol`, `quantity`, `price`, `operation`) VALUES
-(:index, 
-:symbol, :
-quantity, 
-:price, 
-:operation)"]]></ee:set-variable>
+						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlQuery" />
+						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
+						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
 					</ee:variables>
 				</ee:transform>
 				<flow-ref doc:name="insert-to-db-Sub_Flow" doc:id="17b60929-816c-4622-ac00-12cca4be3ace" name="insert-to-db-Sub_Flow"/>

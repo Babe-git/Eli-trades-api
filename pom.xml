@@ -36,6 +36,7 @@
 							<artifactId>mysql-connector-java</artifactId>
 						</sharedLibrary>
 					</sharedLibraries>
+					<classifier>mule-application</classifier>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -72,17 +73,17 @@
 			<version>8.0.23</version>
 		</dependency>
 		<dependency>
-			<groupId>6326f4e2-892d-4b17-9664-89a7346f1321</groupId>
-			<artifactId>eli_trade_api</artifactId>
-			<version>1.0.4</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-db-connector</artifactId>
 			<version>1.10.5</version>
 			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>6326f4e2-892d-4b17-9664-89a7346f1321</groupId>
+			<artifactId>eli_trade_api</artifactId>
+			<version>1.0.5</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 

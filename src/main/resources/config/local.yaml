@@ -1,0 +1,14 @@
+equity:
+  filePath : c:\\Elias_Files\\nikil_gelila\\k\\Equity\\
+  fileName : equity_trade_
+  
+fx:
+  filePath : c:\\Elias_Files\\nikil_gelila\\g\\FX\\
+  fileName : fx_trade_
+  
+db:
+  host: "localhost"
+  port: "3306"
+  user: "root"
+  password: "root"
+  database: "sys"

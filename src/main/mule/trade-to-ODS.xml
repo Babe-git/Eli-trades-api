@@ -6,9 +6,11 @@
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="process-multiple-trades-to-ODS-Sub_Flow" doc:id="5634b14a-d706-4030-b3f3-e83219681900" >
-		<foreach doc:name="For Each" doc:id="c9ef466c-58fa-4dce-9ffc-76edd6b4d163" >
-			<flow-ref doc:name="process-trades-to-ODS-Sub_Flow" doc:id="4f0f534d-c3e0-47dd-b6ab-d8411145e383" name="process-trades-to-ODS-Sub_Flow"/>
+		<try doc:name="Try(used to handle if the is an error in any of the input data)" doc:id="dfc46d55-b094-4e8e-9e03-9e491fb35f95" transactionalAction="ALWAYS_BEGIN">
+			<foreach doc:name="For Each" doc:id="c9ef466c-58fa-4dce-9ffc-76edd6b4d163">
+			<flow-ref doc:name="process-trades-to-ODS-Sub_Flow" doc:id="4f0f534d-c3e0-47dd-b6ab-d8411145e383" name="process-trades-to-ODS-Sub_Flow" />
 		</foreach>
+		</try>
 		<ee:transform doc:name="Transform Message" doc:id="399029c0-e5c7-43fe-9c26-94a3581dc52b">
 					<ee:message>
 						<ee:set-payload><![CDATA[output application/json
@@ -21,10 +23,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				</ee:transform>
 	</sub-flow>
 	<sub-flow name="process-trades-to-ODS-Sub_Flow" doc:id="e0c02383-704c-45f3-b6ba-2748c34816fd" >
-		<logger level="INFO" doc:name="Logger" doc:id="38316ec5-f9aa-4a8b-a1ba-acc9e0dff10b" message='#["request recieved to ODS, correlationID: " ++ correlationId]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="38316ec5-f9aa-4a8b-a1ba-acc9e0dff10b" message='#["request recieved to ODS, correlationID: " ++ correlationId]' />
 		<choice doc:name="Choice" doc:id="d5367e46-71c5-48e1-ac67-bbbabc6a4957">
 			<when expression='#[lower(payload."type") == "equity"]'>
-				<logger level="INFO" doc:name="Logger" doc:id="5f24c125-79d5-4f6a-afb4-91dcfb777c8d" message='"recieved equity trade , correlationID: " ++ correlationId'/>
+				<logger level="INFO" doc:name="Logger" doc:id="5f24c125-79d5-4f6a-afb4-91dcfb777c8d" message='"recieved equity trade , correlationID: " ++ correlationId' />
 				<ee:transform doc:name="set vars" doc:id="223e929c-2138-4e0e-bf57-0bf1ec925d6f">
 					<ee:message>
 					</ee:message>
@@ -42,7 +44,7 @@ quantity,
 						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
 					</ee:variables>
 				</ee:transform>
-				<flow-ref doc:name="insert-to-db-Sub_Flow" doc:id="9f9d9fde-8911-446f-a44c-0050d52299ec" name="insert-to-db-Sub_Flow"/>
+				<flow-ref doc:name="insert-to-db-Sub_Flow" doc:id="9f9d9fde-8911-446f-a44c-0050d52299ec" name="insert-to-db-Sub_Flow" />
 			</when>
 			<when expression='#[lower(payload."type") == "fx"]'>
 				<logger level="INFO" doc:name="Logger" doc:id="5fbc5069-a2a5-4808-bd10-0978fb8233a8" message='"recieved fx trade , correlationID: " ++ correlationId' />
@@ -51,7 +53,7 @@ quantity,
 					<ee:variables>
 						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
 						<ee:set-variable resource="dw/mapTrade.dwl" variableName="sqlInputParams" />
-						<ee:set-variable variableName="sqlQuery" ><![CDATA[%dw 2.0
+						<ee:set-variable variableName="sqlQuery"><![CDATA[%dw 2.0
 output application/json
 ---
 "INSERT INTO `sys`.`equity` (`index`, symbol, quantity, price, operation)  VALUES
@@ -62,10 +64,10 @@ quantity,
 :operation)"]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
-				<flow-ref doc:name="insert-to-db-Sub_Flow" doc:id="17b60929-816c-4622-ac00-12cca4be3ace" name="insert-to-db-Sub_Flow"/>
+				<flow-ref doc:name="insert-to-db-Sub_Flow" doc:id="17b60929-816c-4622-ac00-12cca4be3ace" name="insert-to-db-Sub_Flow" />
 			</when>
 			<otherwise>
-				<logger level="INFO" doc:name="Logger" doc:id="c34e67d2-d49e-40ce-ba7e-6a828d35e879" message='#["invalid trade type, correlationID: " ++ correlationId]'/>
+				<logger level="INFO" doc:name="Logger" doc:id="c34e67d2-d49e-40ce-ba7e-6a828d35e879" message='#["invalid trade type, correlationID: " ++ correlationId]' />
 			</otherwise>
 		</choice>
 	</sub-flow>
